@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  mongo:
+    image: mongo:latest
+    ports:
+      - 27017:27017
+    volumes:
+      - mongo-data:/data/db
+
+  backend:
+    build:
+      context: .                         # this is the directory where the dockerfile is located
+      dockerfile: Dockerfile             # this is the name of the dockerfile, we can also create Dockerfile.dev or Dockerfile.prod and use them here
+      target: development                # this is the name of the build stage
+    ports:
+      - 8000:8000
+    environment:
+      - DB_URI=mongodb://mongo:27017/docker_db
+      - PORT=8000
+    volumes:
+      - .:/usr/src/app
+    depends_on:
+      - mongo
+
+volumes:
+  mongo-data:
+     
